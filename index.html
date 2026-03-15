@@ -789,7 +789,8 @@
                 <li><a href="#architecture">架构</a></li>
                 <li><a href="#arkts">ArkTS/星闪</a></li>
                 <li><a href="#stage">Stage</a></li>
-                <li><a href="#compiler">编译器/HOS6</a></li>
+                <li><a href="#ai">AI能力</a></li>
+                <li><a href="#compiler">编译器</a></li>
                 <li><a href="#timeline">历程</a></li>
             </ul>
             <div class="menu-toggle" id="menuToggle">
@@ -1238,9 +1239,113 @@
         </div>
     </section>
 
+
+    <section id="ai">
+        <div class="section-header fade-in">
+            <span class="section-number">06</span>
+            <h2>AI 能力与智能体</h2>
+            <p>盘古大模型赋能的智慧操作系统，AI 与 OS 深度融合</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🧠</div>
+                <h3>盘古大模型</h3>
+                <p>华为盘古大模型深度融入鸿蒙系统，为小艺智能助手提供超强记忆、推理和规划能力。支持23类常用记忆类型，实现系统级智能体体验。</p>
+                <div class="card-tags">
+                    <span class="tag">盘古大模型</span>
+                    <span class="tag">LLM</span>
+                    <span class="tag">系统级智能体</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🎙️</div>
+                <h3>小艺智能体</h3>
+                <p>小艺从语音助手升级为系统级智能体，基于大模型实现意图理解、任务规划和自动执行。支持多轮对话、跨应用协作、知识推理。</p>
+                <div class="card-tags">
+                    <span class="tag">小艺</span>
+                    <span class="tag">意图理解</span>
+                    <span class="tag">智能协作</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🔧</div>
+                <h3>小艺开放平台</h3>
+                <p>为开发者提供全链路智能体开发解决方案，支持 LLM 模式、工作流模式、A2A 模式。可快速构建面向鸿蒙生态的 AI 应用。</p>
+                <div class="card-tags">
+                    <span class="tag">开发平台</span>
+                    <span class="tag">工作流</span>
+                    <span class="tag">A2A</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 2rem;">
+            <div class="code-header">
+                <span class="code-lang">ArkTS AI 能力示例</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 鸿蒙 AI 能力调用示例</span>
+
+<span class="keyword">import</span> { <span class="type">MCP</span> } <span class="keyword">from</span> <span class="string">'@ohos.ai'</span>;
+
+<span class="comment">// 使用意图理解服务</span>
+<span class="keyword">async</span> <span class="function">analyzeIntent</span>(query: <span class="type">string</span>): <span class="type">Promise</span><IntentResult> {
+    <span class="keyword">const</span> intent = <span class="keyword">await</span> MCP.<span class="function">understand</span>({
+        query,
+        context: <span class="keyword">this</span>.getAppContext(),
+        history: <span class="keyword">this</span>.dialogHistory
+    });
+
+    <span class="keyword">return</span> {
+        action: intent.action,
+        entities: intent.entities,
+        confidence: intent.confidence
+    };
+}
+
+<span class="comment">// 智能体任务执行</span>
+<span class="keyword">async</span> <span class="function">executeTask</span>(intent: <span class="type">IntentResult</span>): <span class="type">Promise</span><span class="type">void</span> {
+    <span class="keyword">const</span> plan = <span class="keyword">await</span> MCP.<span class="function">plan</span>(intent);
+
+    <span class="keyword">for</span> (<span class="keyword">const</span> step <span class="keyword">of</span> plan.steps) {
+        <span class="keyword">await</span> MCP.<span class="function">execute</span>(step);
+    }
+}</pre>
+            </div>
+        </div>
+
+        <ul class="feature-list fade-in" style="margin-top: 2rem;">
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>端侧 AI 推理</strong>
+                    <span>大模型端侧部署，隐私安全本地处理，支持离线智能交互。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>AI 辅助开发</strong>
+                    <span>DevEco Studio 集成 AI 代码补全、智能化调试、性能分析建议。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>意图驱动交互</strong>
+                    <span>从"触控/指令驱动"转向"意图/智能体驱动"，用户体验革命性升级。</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
     <section id="compiler">
         <div class="section-header fade-in">
-            <span class="section-number">05</span>
+            <span class="section-number">06</span>
             <h2>方舟编译器 & HarmonyOS 6</h2>
             <p>从源码到机器码的完整编译链路，以及 2025 年发布的 HarmonyOS 6 核心技术</p>
         </div>
@@ -1313,7 +1418,7 @@
 
     <section id="timeline">
         <div class="section-header fade-in">
-            <span class="section-number">06</span>
+            <span class="section-number">07</span>
             <h2>发展历程</h2>
             <p>从鸿蒙初起到全面进化的技术演进之路</p>
         </div>
@@ -1359,7 +1464,7 @@
 
     <section id="conclusion">
         <div class="section-header fade-in">
-            <span class="section-number">07</span>
+            <span class="section-number">08</span>
             <h2>总结与展望</h2>
             <p>鸿蒙技术体系的核心价值与未来发展方向</p>
         </div>

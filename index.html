@@ -787,9 +787,9 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#overview">概述</a></li>
                 <li><a href="#architecture">架构</a></li>
-                <li><a href="#arkts">ArkTS/星闪</a></li>
                 <li><a href="#stage">Stage</a></li>
-                <li><a href="#ai">AI能力</a></li>
+                <li><a href="#dev">开发</a></li>
+                <li><a href="#ai">AI</a></li>
                 <li><a href="#compiler">编译器</a></li>
                 <li><a href="#timeline">历程</a></li>
             </ul>
@@ -1239,6 +1239,169 @@
         </div>
     </section>
 
+    <section id="dev">
+        <div class="section-header fade-in">
+            <span class="section-number">05</span>
+            <h2>应用开发指南</h2>
+            <p>从开发工具到构建发布，鸿蒙原生应用开发全流程</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🛠️</div>
+                <h3>DevEco Studio</h3>
+                <p>鸿蒙官方 IDE，基于 IntelliJ IDEA 开发。支持代码智能补全、实时预览、性能分析、分布式调试。集成方舟编译器，编译速度提升显著。</p>
+                <div class="card-tags">
+                    <span class="tag">IDE</span>
+                    <span class="tag">智能补全</span>
+                    <span class="tag">热重载</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🎨</div>
+                <h3>ArkUI 声明式开发</h3>
+                <p>采用声明式 UI 范式，状态驱动视图更新。丰富组件库支持，响应式布局适配多端。配合 @Builder 实现代码复用。</p>
+                <div class="card-tags">
+                    <span class="tag">ArkUI</span>
+                    <span class="tag">声明式</span>
+                    <span class="tag">响应式</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">📦</div>
+                <h3>模块化工程</h3>
+                <p>采用 HAP/HAR/HSP 模块化架构。支持多模块协作、热更新、资源共享。模块间依赖清晰，构建产物灵活组合。</p>
+                <div class="card-tags">
+                    <span class="tag">HAP</span>
+                    <span class="tag">HAR</span>
+                    <span class="tag">HSP</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 2rem;">
+            <div class="code-header">
+                <span class="code-lang">ArkUI 声明式开发示例</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// ArkUI 声明式 UI 开发</span>
+
+<span class="keyword">@Entry</span>
+<span class="keyword">@Component</span>
+<span class="keyword">struct</span> <span class="function">MyApp</span> {
+    <span class="annotation">@State</span> message: <span class="type">string</span> = <span class="string">'Hello HarmonyOS'</span>;
+    <span class="annotation">@State</span> count: <span class="type">number</span> = <span class="number">0</span>;
+
+    <span class="annotation">@Builder</span>
+    <span class="function">CardView</span>(title: <span class="type">string</span>, content: <span class="type">string</span>) {
+        Column() {
+            Text(title)
+                .fontSize(<span class="number">20</span>)
+                .fontWeight(<span class="type">FontWeight</span>.Bold)
+            Text(content)
+                .fontSize(<span class="number">14</span>)
+                .fontColor(<span class="type">Color</span>.Gray)
+        }
+        .padding(<span class="number">16</span>)
+        .backgroundColor(<span class="type">Color</span>.White)
+        .borderRadius(<span class="number">12</span>)
+    }
+
+    <span class="annotation">@Builder</span>
+    <span class="function">build</span>() {
+        Column() {
+            Text(<span class="keyword">this</span>.message)
+                .fontSize(<span class="number">32</span>)
+                .margin({ bottom: <span class="number">20</span> })
+
+            <span class="comment">// 组件复用</span>
+            <span class="keyword">this</span>.<span class="function">CardView</span>(<span class="string">'计数器'</span>, <span class="string">`当前值: ${this.count}`</span>)
+
+            Button(<span class="string">'+1'</span>)
+                .onClick(() => {
+                    <span class="keyword">this</span>.count++;
+                })
+                .margin({ top: <span class="number">20</span> })
+        }
+        .width(<span class="string">'100%'</span>)
+        .height(<span class="string">'100%'</span>)
+        .padding(<span class="number">24</span>)
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">分布式流转开发</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 分布式跨设备流转开发</span>
+
+<span class="keyword">import</span> { <span class="type">continuation</span>, <span class="type">DeviceInfo</span> } <span class="keyword">from</span> <span class="string">'@ohos.distributedHardware'</span>;
+
+<span class="comment">// 发起跨设备流转</span>
+<span class="keyword">async</span> <span class="function">startContinuation</span>(): <span class="type">Promise</span><span class="type">void</span> {
+    <span class="comment">// 获取附近可流转设备</span>
+    <span class="keyword">const</span> devices = <span class="keyword">await</span> continuation.<span class="function">getAvailableDevices</span>();
+
+    <span class="comment">// 选择目标设备</span>
+    <span class="keyword">const</span> targetDevice = devices[<span class="number">0</span>];
+
+    <span class="comment">// 构造流转参数</span>
+    <span class="keyword">const</span> params = {
+        sessionId: <span class="string">'game_session'</span>,
+        state: <span class="keyword">this</span>.gameState,
+        timestamp: Date.<span class="function">now</span>()
+    };
+
+    <span class="comment">// 发起流转</span>
+    <span class="keyword">await</span> continuation.<span class="function">start</span>({
+        device: targetDevice,
+        abilityName: <span class="string">'GameAbility'</span>,
+        params: params
+    });
+}
+
+<span class="comment">// 接收端处理流转</span>
+<span class="keyword">class</span> <span class="function">GameReceiver</span> {
+    <span class="function">onContinue</span>(params: <span class="type">Object</span>): <span class="type">void</span> {
+        <span class="keyword">this</span>.gameState = params.state;
+        <span class="keyword">this</span>.restoreUI();
+    }
+}</pre>
+            </div>
+        </div>
+
+        <ul class="feature-list fade-in" style="margin-top: 2rem;">
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>低代码开发</strong>
+                    <span>DevEco Studio 支持可视化拖拽布局，预览器实时渲染，效率大幅提升。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>一次开发多端部署</strong>
+                    <span>一套代码适配手机、平板、智慧屏、车机、手表，通过响应式布局自适应。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>原子化服务</strong>
+                    <span>无需安装即可使用，通过意图框架主动触达用户，实现服务找人。</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
 
     <section id="ai">
         <div class="section-header fade-in">
@@ -1345,7 +1508,7 @@
 
     <section id="compiler">
         <div class="section-header fade-in">
-            <span class="section-number">06</span>
+            <span class="section-number">07</span>
             <h2>方舟编译器 & HarmonyOS 6</h2>
             <p>从源码到机器码的完整编译链路，以及 2025 年发布的 HarmonyOS 6 核心技术</p>
         </div>

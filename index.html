@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarmonyOS 核心技术与架构深度解析 | 2026 最新版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #1c2128;
+            --accent-blue: #58a6ff;
+            --accent-green: #7ee787;
+            --accent-amber: #d29922;
+            --accent-red: #f85149;
+            --accent-purple: #bc8cff;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --code-bg: #262c36;
+            --border-color: #30363d;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: "Noto Sans SC", "PingFang SC", sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(13, 17, 23, 0.95);
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: ">";
+            color: var(--accent-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0f1923 100%);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(88, 166, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(126, 231, 135, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-family: "JetBrains Mono", monospace;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .terminal-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-width: 700px;
+            margin: 2rem auto;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .terminal-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.2s; }
+        .terminal-line:nth-child(2) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(3) { animation-delay: 0.8s; }
+        .terminal-line:nth-child(4) { animation-delay: 1.1s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .terminal-prompt {
+            color: var(--accent-green);
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+            padding-left: 1rem;
+        }
+
+        .terminal-keyword {
+            color: var(--accent-purple);
+        }
+
+        .terminal-string {
+            color: var(--accent-green);
+        }
+
+        .terminal-comment {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            stroke: var(--text-secondary);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .section-header h2::before {
+            content: "//";
+            color: var(--accent-blue);
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-number {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.875rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-blue);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--code-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--code-bg);
+            border-radius: 20px;
+            color: var(--accent-blue);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-lang {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
+        }
+
+        .code-content {
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .code-content pre {
+            margin: 0;
+        }
+
+        .code-content .keyword {
+            color: var(--accent-purple);
+        }
+
+        .code-content .string {
+            color: var(--accent-green);
+        }
+
+        .code-content .comment {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .code-content .function {
+            color: var(--accent-blue);
+        }
+
+        .code-content .type {
+            color: var(--accent-amber);
+        }
+
+        .code-content .number {
+            color: var(--accent-red);
+        }
+
+        /* Architecture Diagram */
+        .arch-diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .arch-layer {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .arch-layer:last-child {
+            margin-bottom: 0;
+        }
+
+        .arch-layer h4 {
+            position: absolute;
+            top: -12px;
+            left: 1rem;
+            background: var(--bg-card);
+            padding: 0 0.5rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+        }
+
+        .arch-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .arch-item {
+            background: var(--code-bg);
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            transform: translateX(-5px);
+        }
+
+        .timeline-year {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--code-bg);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+        }
+
+        .comparison-table td {
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table .check {
+            color: var(--accent-green);
+        }
+
+        .comparison-table .cross {
+            color: var(--accent-red);
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+        }
+
+        .feature-text strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-text span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 1.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            z-index: 1001;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                flex-direction: column;
+                padding: 1rem 2rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .terminal-window {
+                margin: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .comparison-table {
+                font-size: 0.85rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
+            }
+
+            .arch-items {
+                flex-direction: column;
+            }
+
+            .arch-item {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Code highlighting */
+        .hljs { background: transparent !important; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <nav id="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">HarmonyOS</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#overview">概述</a></li>
+                <li><a href="#architecture">架构</a></li>
+                <li><a href="#arkts">ArkTS/星闪</a></li>
+                <li><a href="#stage">Stage</a></li>
+                <li><a href="#compiler">编译器/HOS6</a></li>
+                <li><a href="#timeline">历程</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>HarmonyOS</h1>
+            <p class="hero-subtitle">核心技术与架构深度解析 · 2026 最新版</p>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command"> uname -a</span>
+                    </div>
+                    <div class="terminal-line terminal-output">
+                        HarmonyOS 6.0 kernel-typed RISC-V64
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-command"> cat /proc/分布式架构</span>
+                    </div>
+                    <div class="terminal-line terminal-output">
+                        <span class="terminal-keyword">微内核</span> + <span class="terminal-string">软总线</span> + <span class="terminal-keyword">设备协同</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+    </section>
+
+    <section id="overview">
+        <div class="section-header fade-in">
+            <span class="section-number">01</span>
+            <h2>系统概述</h2>
+            <p>从技术视角理解鸿蒙操作系统的设计哲学与核心定位</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3>设计目标</h3>
+                <p>鸿蒙旨在实现"统一生态，跨设备协同"的终极目标。通过分布式架构，一套代码可运行在手机、平板、车机、智能手表、IoT设备等多元终端上。2025年3月20日，纯血鸿蒙 HarmonyOS NEXT 正式版发布，全面移除AOSP依赖。</p>
+                <div class="card-tags">
+                    <span class="tag">分布式</span>
+                    <span class="tag">跨设备</span>
+                    <span class="tag">纯血鸿蒙</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">⚡</div>
+                <h3>性能优势</h3>
+                <p>微内核架构大幅提升系统安全性与确定性时延。轻量化内核 + 方舟编译器 + AOT编译实现"一次开发，多端运行"的高效开发体验。内核代码量仅为Linux的1/20，启动速度提升50%。</p>
+                <div class="card-tags">
+                    <span class="tag">微内核</span>
+                    <span class="tag">确定时延</span>
+                    <span class="tag">AOT编译</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🔐</div>
+                <h3>安全体系</h3>
+                <p>基于TEE可信执行环境的Security Foundation，实现数据安全、权限管控、设备认证的体系化安全保障。纯血鸿蒙采用全新安全架构，权限管控更加精细化。</p>
+                <div class="card-tags">
+                    <span class="tag">TEE</span>
+                    <span class="tag">数据安全</span>
+                    <span class="tag">权限管控</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 3rem;">
+            <div class="code-header">
+                <span class="code-lang">系统架构概览</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre>┌─────────────────────────────────────────────────────────────┐
+│                    HarmonyOS 应用层                          │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
+│  │  App    │  │  App    │  │  App    │  │  App    │  ...    │
+│  │(手机)   │  │(平板)   │  │(车机)   │  │(手表)   │        │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
+└───────┼────────────┼────────────┼────────────┼──────────────┘
+        │            │            │            │
+┌───────┴────────────┴────────────┴────────────┴──────────────┐
+│                    HarmonyOS 框架层                           │
+│  ┌──────────────────────────────────────────────────────┐    │
+│  │  Stage模型 │ 分布式调度 │ 软总线 │ ArkTS │ ARK Runtime│   │
+│  └──────────────────────────────────────────────────────┘    │
+└───────────────────────────────────────────────────────────────┘
+        │
+┌───────┴───────────────────────────────────────────────────────┐
+│                    HarmonyOS 内核层                            │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐           │
+│  │ Linux内核   │  │  LiteOS-A   │  │  LiteOS-M   │   ...     │
+│  │ (富设备)    │  │  (高安全)   │  │  (小设备)   │           │
+│  └─────────────┘  └─────────────┘  └─────────────┘           │
+└───────────────────────────────────────────────────────────────┘</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture">
+        <div class="section-header fade-in">
+            <span class="section-number">02</span>
+            <h2>微内核架构</h2>
+            <p>与宏内核的深度对比，理解微内核带来的技术变革</p>
+        </div>
+
+        <div class="arch-diagram fade-in">
+            <div class="arch-layer">
+                <h4>宏内核 (Linux/FreeBSD)</h4>
+                <div class="arch-items">
+                    <span class="arch-item">文件系统</span>
+                    <span class="arch-item">网络协议栈</span>
+                    <span class="arch-item">设备驱动</span>
+                    <span class="arch-item">进程管理</span>
+                    <span class="arch-item">内存管理</span>
+                    <span class="arch-item">系统调用</span>
+                </div>
+            </div>
+            <div class="arch-layer" style="border-color: var(--accent-blue);">
+                <h4>微内核 (HarmonyOS)</h4>
+                <div class="arch-items">
+                    <span class="arch-item">基本进程调度</span>
+                    <span class="arch-item">内存管理</span>
+                    <span class="arch-item" style="color: var(--accent-amber);">→ 外置服务 (IPC/文件系统/网络)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-table fade-in">
+            <table>
+                <thead>
+                    <tr>
+                        <th>特性</th>
+                        <th>宏内核 (Linux)</th>
+                        <th>微内核 (HarmonyOS)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>代码量</td>
+                        <td>数千万行</td>
+                        <td>数万行 (仅内核核心)</td>
+                    </tr>
+                    <tr>
+                        <td>安全隔离</td>
+                        <td>进程级隔离</td>
+                        <td>服务级隔离 + 权限管控</td>
+                    </tr>
+                    <tr>
+                        <td>确定性时延</td>
+                        <td>难以保证</td>
+                        <td><span class="check">✓</span> 硬实时支持</td>
+                    </tr>
+                    <tr>
+                        <td>升级能力</td>
+                        <td>需整系统升级</td>
+                        <td><span class="check">✓</span> 服务热更新</td>
+                    </tr>
+                    <tr>
+                        <td>可靠性</td>
+                        <td>内核崩溃则系统崩溃</td>
+                        <td><span class="check">✓</span> 服务故障隔离</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">HarmonyOS 内核分层</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 鸿蒙内核采用分层设计，支持多种内核类型</span>
+
+<span class="keyword">enum</span> KernelType {
+    KERNEL_LINUX,    <span class="comment">// 智能手机、平板等富设备</span>
+    KERNEL_LITEA,    <span class="comment">// 智能家居、汽车等高安全等级设备</span>
+    KERNEL_LITEM,    <span class="comment">// 耳机、手表等轻量级设备</span>
+    KERNEL_VIRTUAL   <span class="comment">// 虚拟化部署场景</span>
+}
+
+<span class="keyword">struct</span> KernelConfig {
+    <span class="type">uint32_t</span> kernelType;
+    <span class="type">bool</span> enableMicroKernel;     <span class="comment">// 微内核模式</span>
+    <span class="type">bool</span> enable确定性时延;     <span class="comment">// 实时性保证</span>
+    <span class="type">uint32_t</span> isolationLevel;    <span class="comment">// 服务隔离级别</span>
+};</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="arkts">
+        <div class="section-header fade-in">
+            <span class="section-number">03</span>
+            <h2>ArkTS 语言 & 星闪技术</h2>
+            <p>TypeScript 超集带来的静态类型安全与编译优化，以及星闪 NearLink 革命性连接技术</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">📘</div>
+                <h3>TypeScript 超集</h3>
+                <p>ArkTS 完全兼容 TypeScript 语法，并在其基础上增加编译期静态类型检查，确保运行时的类型安全。2025年成为鸿蒙原生应用主力开发语言。</p>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">⚡</div>
+                <h3>星闪 NearLink</h3>
+                <p>星闪 (NearLink) 是鸿蒙核心短距离通信技术，20μs超低延迟、12Mbps高速传输、1ms级同步精度，性能远超蓝牙5.0。已应用于智能车钥匙、工业传感器等场景。</p>
+                <div class="card-tags">
+                    <span class="tag">NearLink</span>
+                    <span class="tag">20μs延迟</span>
+                    <span class="tag">星闪</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🚀</div>
+                <h3>AOT 编译</h3>
+                <p>支持 AOT (Ahead-of-Time) 编译，代码在安装时即编译为机器码，实现近乎零启动延迟。结合 JIT 热点编译，兼顾启动速度与峰值性能。</p>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 2rem;">
+            <div class="code-header">
+                <span class="code-lang">ArkTS 示例：状态管理</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// ArkTS 状态管理示例</span>
+
+<span class="keyword">import</span> { <span class="type">State</span>, <span class="type">Link</span>, <span class="type">Prop</span> } <span class="keyword">from</span> <span class="string">'@ohos.arkui'</span>;
+
+<span class="comment">// 使用 @State 装饰器声明组件状态</span>
+<span class="keyword">@Component</span>
+<span class="keyword">struct</span> <span class="function">Counter</span> {
+    <span class="comment">// 状态变量 - 变化时触发UI重建</span>
+    <span class="annotation">@State</span> count: <span class="type">number</span> = <span class="number">0</span>;
+
+    <span class="comment">// 计算属性</span>
+    <span class="keyword">get</span> doubleCount(): <span class="type">number</span> {
+        <span class="keyword">return</span> <span class="keyword">this</span>.count * <span class="number">2</span>;
+    }
+
+    <span class="annotation">@Builder</span>
+    <span class="function">build</span>() {
+        Column() {
+            Text(<span class="string">`Count: ${this.count}`</span>)
+                .fontSize(<span class="number">30</span>)
+
+            Text(<span class="string">`Double: ${this.doubleCount}`</span>)
+                .fontSize(<span class="number">20</span>)
+                .fontColor(<span class="type">Color</span>.Gray)
+
+            Button(<span class="string">'+1'</span>)
+                .onClick(() => {
+                    <span class="keyword">this</span>.count++;
+                })
+        }
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">ArkTS 示例：并发编程</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// ArkTS 轻量级并发 - TaskPool</span>
+
+<span class="keyword">import</span> { <span class="type">taskPool</span> } <span class="keyword">from</span> <span class="string">'@ohos.taskpool'</span>;
+
+<span class="comment">// 使用 @Concurrent 装饰器标记并发函数</span>
+<span class="annotation">@Concurrent</span>
+<span class="keyword">function</span> <span class="function">processData</span>(data: <span class="type">number[]</span>): <span class="type">number</span> {
+    <span class="comment">// 密集计算任务</span>
+    <span class="keyword">return</span> data.reduce((sum, val) => sum + val, <span class="number">0</span>);
+}
+
+<span class="annotation">@Entry</span>
+<span class="keyword">struct</span> <span class="function">MainPage</span> {
+    <span class="annotation">@State</span> result: <span class="type">string</span> = <span class="string">''</span>;
+
+    <span class="keyword">async</span> <span class="function">onClick</span>() {
+        <span class="comment">// 创建并发任务</span>
+        <span class="keyword">const</span> task = <span class="keyword">new</span> <span class="function">taskPool</span>.<span class="function">Task</span>(processData, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]);
+
+        <span class="comment">// 提交到线程池执行</span>
+        <span class="keyword">const</span> result = <span class="keyword">await</span> taskPool.<span class="function">execute</span>(task);
+
+        <span class="keyword">this</span>.result = <span class="string">`Sum: ${result}`</span>;
+    }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="stage">
+        <div class="section-header fade-in">
+            <span class="section-number">04</span>
+            <h2>Stage 模型</h2>
+            <p>鸿蒙应用的核心开发模型与四大组件</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">📱</div>
+                <h3>UIAbility</h3>
+                <p>应用能力的抽象单元，相当于 Android 的 Activity。提供 UI 界面与用户交互，支持多实例与窗口形态。</p>
+                <div class="card-tags">
+                    <span class="tag">页面</span>
+                    <span class="tag">多实例</span>
+                    <span class="tag">窗口</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🔌</div>
+                <h3>ExtensionAbility</h3>
+                <p>扩展能力框架，支持多种 Extension 类型：ShareExtension、InputMethodExtension、ServiceExtension 等。</p>
+                <div class="card-tags">
+                    <span class="tag">扩展</span>
+                    <span class="tag">分享</span>
+                    <span class="tag">输入法</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">📋</div>
+                <h3>Stage 模型优势</h3>
+                <p>相较于 FA 模型，Stage 模型实现应用进程管理与 UI 渲染分离，提升复杂应用性能与稳定性。</p>
+                <div class="card-tags">
+                    <span class="tag">进程分离</span>
+                    <span class="tag">高性能</span>
+                    <span class="tag">稳定性</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 2rem;">
+            <div class="code-header">
+                <span class="code-lang">Stage 模型生命周期</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// UIAbility 生命周期</span>
+
+<span class="keyword">import</span> { <span class="type">UIAbility</span>, <span class="type">AbilityLifecycleCallback</span> } <span class="keyword">from</span> <span class="string">'@ohos.app.ability.common'</span>;
+
+<span class="keyword">class</span> <span class="function">MyAbility</span> <span class="keyword">extends</span> <span class="type">UIAbility</span> {
+
+    <span class="comment">// ① 应用首次启动时触发</span>
+    <span class="function">onCreate</span>(want: <span class="type">Want</span>): <span class="type">void</span> {
+        console.<span class="function">log</span>(<span class="string">'Ability onCreate'</span>);
+    }
+
+    <span class="comment">// ② Ability 窗口创建完成</span>
+    <span class="function">onWindowStageCreate</span>(windowStage: <span class="type">WindowStage</span>): <span class="type">void</span> {
+        <span class="comment">// 加载主页面</span>
+        windowStage.<span class="function">loadContent</span>(<span class="string">'pages/MainPage'</span>);
+    }
+
+    <span class="comment">// ③ Ability 进入前台</span>
+    <span class="function">onForeground</span>(): <span class="type">void</span> {
+        console.<span class="function">log</span>(<span class="string">'Ability onForeground'</span>);
+    }
+
+    <span class="comment">// ④ Ability 进入后台</span>
+    <span class="function">onBackground</span>(): <span class="type">void</span> {
+        console.<span class="function">log</span>(<span class="string">'Ability onBackground'</span>);
+    }
+
+    <span class="comment">// ⑤ Ability 窗口销毁</span>
+    <span class="function">onWindowStageDestroy</span>(): <span class="type">void</span> {
+        console.<span class="function">log</span>(<span class="string">'Ability onWindowStageDestroy'</span>);
+    }
+
+    <span class="comment">// ⑥ Ability 销毁</span>
+    <span class="function">onDestroy</span>(): <span class="type">void</span> {
+        console.<span class="function">log</span>(<span class="string">'Ability onDestroy'</span>);
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">Stage 配置：module.json5</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre>{
+  <span class="string">"module"</span>: {
+    <span class="string">"name"</span>: <span class="string">"entry"</span>,
+    <span class="string">"type"</span>: <span class="string">"entry"</span>,
+    <span class="string">"description"</span>: <span class="string">"$string:module_desc"</span>,
+    <span class="string">"mainElement"</span>: <span class="string">"EntryAbility"</span>,
+
+    <span class="string">"abilities"</span>: [
+      {
+        <span class="string">"name"</span>: <span class="string">"EntryAbility"</span>,
+        <span class="string">"srcEntry"</span>: <span class="string">"./ets/entryability/EntryAbility.ts"</span>,
+        <span class="string">"description"</span>: <span class="string">"$string:entry_ability_desc"</span>,
+        <span class="string">"icon"</span>: <span class="string">"$media:icon"</span>,
+        <span class="string">"label"</span>: <span class="string">"$string:entry_ability_label"</span>,
+        <span class="string">"startWindowIcon"</span>: <span class="string">"$media:icon"</span>,
+        <span class="string">"startWindowBackground"</span>: <span class="string">"$color:start_window_background"</span>
+      }
+    ],
+
+    <span class="string">"extensionAbilities"</span>: [
+      {
+        <span class="string">"name"</span>: <span class="string">"ShareExtension"</span>,
+        <span class="string">"srcEntry"</span>: <span class="string">"./ets/extensionshare/EntryAbility.ts"</span>,
+        <span class="string">"label"</span>: <span class="string">"$string:share_extension_label"</span>,
+        <span class="string">"type"</span>: <span class="string">"share"</span>
+      }
+    ]
+  }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="compiler">
+        <div class="section-header fade-in">
+            <span class="section-number">05</span>
+            <h2>方舟编译器 & HarmonyOS 6</h2>
+            <p>从源码到机器码的完整编译链路，以及 2025 年发布的 HarmonyOS 6 核心技术</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🔄</div>
+                <h3>多语言前端</h3>
+                <p>支持 Java/Kotlin/JavaScript/TypeScript/ArkTS 多语言统一编译，消除语言边界，降低开发门槛。</p>
+                <div class="card-tags">
+                    <span class="tag">前端</span>
+                    <span class="tag">统一IR</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">⚡</div>
+                <h3>AOT + JIT</h3>
+                <p>安装时 AOT 预编译，运行中 JIT 动态编译，热代码无需解释执行，兼顾启动速度与峰值性能。</p>
+                <div class="card-tags">
+                    <span class="tag">AOT</span>
+                    <span class="tag">JIT</span>
+                    <span class="tag">热点优化</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3>HarmonyOS 6 新架构</h3>
+                <p>2025年10月发布。分布式软总线3.0支持50Gbps带宽，能力池化技术让多设备算力共享，复杂任务效率提升3.2倍。</p>
+                <div class="card-tags">
+                    <span class="tag">星河架构</span>
+                    <span class="tag">能力池化</span>
+                    <span class="tag">50Gbps</span>
+                </div>
+            </div>
+        </div>
+
+        <ul class="feature-list fade-in" style="margin-top: 2rem;">
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>统一中间表示 (ARK IR)</strong>
+                    <span>所有源语言统一编译为方舟 IR，消除了运行时解释器的需要，大幅提升执行效率。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>类型推导与逃逸分析</strong>
+                    <span>编译期进行对象生命周期分析，优化内存分配策略，实现栈分配与标量替换。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>内联与常量折叠</strong>
+                    <span>跨函数边界优化，消除虚调用开销，常量表达式在编译期求值。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>并行编译</strong>
+                    <span>模块级并行编译加速，大型项目编译时间显著缩短。</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <section id="timeline">
+        <div class="section-header fade-in">
+            <span class="section-number">06</span>
+            <h2>发展历程</h2>
+            <p>从鸿蒙初起到全面进化的技术演进之路</p>
+        </div>
+
+        <div class="timeline fade-in">
+            <div class="timeline-item">
+                <div class="timeline-year">2019 · HarmonyOS 1.0</div>
+                <div class="timeline-title">鸿蒙初现</div>
+                <div class="timeline-desc">华为正式发布鸿蒙操作系统，首款搭载于智慧屏产品。提出"分布式"核心理念，采用微内核架构设计。</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2020 · HarmonyOS 2.0</div>
+                <div class="timeline-title">分布式能力增强</div>
+                <div class="timeline-desc">引入分布式软总线、分布式数据管理、分布式安全等核心能力。手机版鸿蒙正式发布，万物互联初具雏形。</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2021 · HarmonyOS 3.0</div>
+                <div class="timeline-title">超级终端成熟</div>
+                <div class="timeline-desc">超级终端能力全面升级，流转功能完善。引入 ArkTS 语言，开发体验大幅提升。设备量突破 2.2 亿。</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2023 · HarmonyOS 4.0</div>
+                <div class="timeline-title">ArkTS 全面发力</div>
+                <div class="timeline-desc">ArkTS 成为主力开发语言，Stage 模型成熟。方舟编译器持续优化，鸿蒙生态全面爆发，应用数量超过 4000。</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2025.3 · HarmonyOS NEXT</div>
+                <div class="timeline-title">纯血鸿蒙正式发布</div>
+                <div class="timeline-desc">完全移除 AOSP 依赖，纯自研鸿蒙内核正式商用。3月20日正式定名 HarmonyOS 5.0，开启原生应用生态新时代。设备数量突破 2300 万台。</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2025.10 · HarmonyOS 6.0</div>
+                <div class="timeline-title">星河互联架构</div>
+                <div class="timeline-desc">发布 HarmonyOS 6 开发者 Beta 版。分布式软总线 3.0 支持 50Gbps 带宽、<1ms 延迟。能力池化技术实现多设备算力共享，复杂任务效率提升 3.2 倍。</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="conclusion">
+        <div class="section-header fade-in">
+            <span class="section-number">07</span>
+            <h2>总结与展望</h2>
+            <p>鸿蒙技术体系的核心价值与未来发展方向</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card fade-in">
+                <div class="card-icon">🔗</div>
+                <h3>统一生态</h3>
+                <p>打破设备孤岛，实现多端协同。一个应用，多端部署，统一体验。2025年纯血鸿蒙发布，AOSP依赖全面移除，生态自主可控。</p>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">📈</div>
+                <h3>性能突破</h3>
+                <p>微内核 + AOT 编译 + 确定时延 + 星闪 NearLink，为下一代智能设备提供坚实的技术底座。星河互联架构实现50Gbps带宽、<1ms延迟。</p>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🌐</div>
+                <h3>生态崛起</h3>
+                <p>设备量突破 2300万+ (HarmonyOS 5/6)，原生应用生态全面爆发。HarmonyOS 6 能力池化技术让多设备算力共享成为现实。</p>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 3rem;">
+            <div class="code-header">
+                <span class="code-lang">未来可期</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 鸿蒙的终极愿景</span>
+
+<span class="keyword">const</span> HARMONY_VISION = {
+    <span class="string">unifiedEcosystem</span>: <span class="string">"一次开发，多端部署"</span>,
+    <span class="string">distributedComputing</span>: <span class="string">"设备即算力"</span>,
+    <span class="string">nativeKernel</span>: <span class="string">"纯血鸿蒙"</span>,
+    <span class="string">developerEarnings</span>: <span class="string">"一次开发，多端收益"</span>
+};
+
+<span class="comment">// 开发者入局正当其时</span>
+<span class="keyword">if</span> (developer.ready && ecosystem.growing) {
+    developer.embrace(HARMONYOS);
+    <span class="comment">// 红利期：生态扩张 + 人才稀缺 + 政策扶持</span>
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">HarmonyOS</div>
+            <p class="footer-text">从资深程序员视角深度解析鸿蒙操作系统核心技术</p>
+            <div class="footer-links">
+                <a href="https://developer.harmonyos.com" target="_blank">HarmonyOS 开发者官网</a>
+                <a href="https://docs.openharmony.io" target="_blank">OpenHarmony 文档</a>
+                <a href="https://gitee.com/openharmony" target="_blank">OpenHarmony Gitee</a>
+            </div>
+            <p class="footer-copyright">2026 最新版 · 仅供学习交流使用 · Built with ❤️ for Developers</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        const navbar = document.getElementById('navbar');
+        const progressBar = document.getElementById('progressBar');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+
+            progressBar.style.width = progress + '%';
+
+            if (scrollTop > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu on link click
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Fade in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const codeContent = codeBlock.querySelector('.code-content pre');
+            const text = codeContent.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = '已复制';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.textContent = '复制';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

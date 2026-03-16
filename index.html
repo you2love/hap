@@ -9,19 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-card: #1c2128;
-            --accent-blue: #58a6ff;
-            --accent-green: #7ee787;
-            --accent-amber: #d29922;
-            --accent-red: #f85149;
-            --accent-purple: #bc8cff;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --code-bg: #262c36;
-            --border-color: #30363d;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --accent-blue: #4fc3f7;
+            --accent-green: #81c784;
+            --accent-amber: #ffb74d;
+            --accent-red: #e57373;
+            --accent-purple: #ba68c8;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --code-bg: #2d2d44;
+            --border-color: #4a4a6a;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -93,9 +93,9 @@
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--text-primary);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: color 0.2s ease;
             font-family: "JetBrains Mono", monospace;
         }
@@ -192,7 +192,7 @@
         .terminal-body {
             padding: 1.5rem;
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             text-align: left;
         }
 
@@ -239,8 +239,9 @@
 
         .hero-subtitle {
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-top: 1rem;
+            line-height: 1.6;
         }
 
         .scroll-indicator {
@@ -295,6 +296,8 @@
             color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto;
+            font-size: 1.05rem;
+            line-height: 1.7;
         }
 
         .section-number {
@@ -338,6 +341,7 @@
             border-color: var(--accent-blue);
             transform: translateY(-4px);
             box-shadow: var(--shadow);
+            background: linear-gradient(145deg, var(--bg-card), rgba(79, 195, 247, 0.15));
         }
 
         .card:hover::before {
@@ -347,13 +351,14 @@
         .card-icon {
             width: 48px;
             height: 48px;
-            background: var(--code-bg);
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.2), rgba(129, 199, 132, 0.15));
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            border: 1px solid rgba(79, 195, 247, 0.3);
         }
 
         .card h3 {
@@ -361,11 +366,13 @@
             font-size: 1.25rem;
             margin-bottom: 1rem;
             color: var(--text-primary);
+            font-weight: 600;
         }
 
         .card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            line-height: 1.8;
             margin-bottom: 1rem;
         }
 
@@ -378,11 +385,12 @@
 
         .tag {
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            background: var(--code-bg);
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(79, 195, 247, 0.15);
             border-radius: 20px;
             color: var(--accent-blue);
+            font-weight: 500;
         }
 
         /* Code Blocks */
@@ -393,10 +401,11 @@
             border-radius: 8px;
             margin: 1.5rem 0;
             overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .code-header {
-            background: var(--bg-card);
+            background: rgba(0, 0, 0, 0.2);
             padding: 0.75rem 1rem;
             display: flex;
             justify-content: space-between;
@@ -406,8 +415,9 @@
 
         .code-lang {
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .copy-btn {
@@ -418,7 +428,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             transition: all 0.2s ease;
         }
 
@@ -430,16 +440,18 @@
 
         .copy-btn.copied {
             background: var(--accent-green);
-            color: var(--bg-primary);
+            color: #1a1a2e;
             border-color: var(--accent-green);
+            font-weight: 600;
         }
 
         .code-content {
             padding: 1.25rem;
             overflow-x: auto;
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.875rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-primary);
         }
 
         .code-content pre {
@@ -447,28 +459,33 @@
         }
 
         .code-content .keyword {
-            color: var(--accent-purple);
+            color: #ff8a80;
+            font-weight: 600;
         }
 
         .code-content .string {
-            color: var(--accent-green);
+            color: #b9f6ca;
         }
 
         .code-content .comment {
-            color: var(--text-secondary);
+            color: #90a4ae;
             font-style: italic;
         }
 
         .code-content .function {
-            color: var(--accent-blue);
+            color: #82b1ff;
         }
 
         .code-content .type {
-            color: var(--accent-amber);
+            color: #ffd180;
         }
 
         .code-content .number {
-            color: var(--accent-red);
+            color: #ea80fc;
+        }
+
+        .code-content .annotation {
+            color: #ffab40;
         }
 
         /* Architecture Diagram */
@@ -487,6 +504,7 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             position: relative;
+            background: rgba(45, 45, 68, 0.5);
         }
 
         .arch-layer:last-child {
@@ -500,8 +518,9 @@
             background: var(--bg-card);
             padding: 0 0.5rem;
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--accent-blue);
+            font-weight: 600;
         }
 
         .arch-items {
@@ -515,8 +534,9 @@
             padding: 0.75rem 1.25rem;
             border-radius: 6px;
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             border: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
 
         /* Timeline */
@@ -546,29 +566,34 @@
             position: absolute;
             left: -2rem;
             top: 0.5rem;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: var(--accent-blue);
             border-radius: 50%;
             transform: translateX(-5px);
+            border: 2px solid var(--bg-primary);
+            box-shadow: 0 0 0 2px var(--accent-blue);
         }
 
         .timeline-year {
             font-family: "JetBrains Mono", monospace;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--accent-green);
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .timeline-title {
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
+            font-size: 1.05rem;
         }
 
         .timeline-desc {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         /* Comparison Table */
@@ -580,6 +605,7 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .comparison-table th,
@@ -587,6 +613,7 @@
             padding: 1rem 1.5rem;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
 
         .comparison-table th {
@@ -594,10 +621,15 @@
             font-family: "JetBrains Mono", monospace;
             font-size: 0.9rem;
             color: var(--accent-blue);
+            font-weight: 600;
         }
 
         .comparison-table td {
             color: var(--text-secondary);
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(79, 195, 247, 0.1);
         }
 
         .comparison-table tr:last-child td {
@@ -618,7 +650,7 @@
         }
 
         .feature-list li {
-            padding: 1rem 0;
+            padding: 1.25rem 0;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: flex-start;
@@ -631,18 +663,23 @@
 
         .feature-icon {
             color: var(--accent-green);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            flex-shrink: 0;
         }
 
         .feature-text strong {
             color: var(--text-primary);
             display: block;
             margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+            font-weight: 600;
         }
 
         .feature-text span {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         /* Footer */
@@ -663,12 +700,14 @@
             font-size: 1.5rem;
             color: var(--accent-blue);
             margin-bottom: 1rem;
+            font-weight: 700;
         }
 
         .footer-text {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-bottom: 1rem;
+            line-height: 1.6;
         }
 
         .footer-links {
@@ -681,7 +720,7 @@
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: color 0.2s ease;
         }
 
@@ -691,8 +730,8 @@
 
         .footer-copyright {
             color: var(--text-secondary);
-            font-size: 0.8rem;
-            opacity: 0.7;
+            font-size: 0.85rem;
+            opacity: 0.8;
         }
 
         /* Progress Bar */
@@ -700,11 +739,12 @@
             position: fixed;
             top: 0;
             left: 0;
-            height: 3px;
+            height: 4px;
             background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
             z-index: 1001;
             width: 0%;
             transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
         }
 
         /* Animations */
@@ -752,7 +792,7 @@
 
             .terminal-window {
                 margin: 1rem;
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
 
             .comparison-table {
@@ -771,6 +811,14 @@
             .arch-item {
                 width: 100%;
                 text-align: center;
+            }
+            
+            body {
+                font-size: 15px;
+            }
+            
+            .section-header h2 {
+                font-size: 1.5rem;
             }
         }
 

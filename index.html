@@ -256,35 +256,35 @@
 
         /* Code Blocks */
         .code-block {
-            background: var(--code-bg);
-            border: 1px solid #3e4451;
+            background: #1e1e1e;
+            border: 1px solid #333333;
             border-left: 4px solid var(--accent-blue);
             border-radius: 8px;
             margin: 1.5rem 0;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         .code-header {
-            background: #21252b;
+            background: #252526;
             padding: 0.75rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #3e4451;
+            border-bottom: 1px solid #333333;
         }
 
         .code-lang {
             font-family: "JetBrains Mono", monospace;
             font-size: 0.85rem;
-            color: #abb2bf;
+            color: #cccccc;
             font-weight: 500;
         }
 
         .copy-btn {
-            background: #2c313a;
-            border: 1px solid #3e4451;
-            color: #abb2bf;
+            background: #333333;
+            border: 1px solid #444444;
+            color: #cccccc;
             padding: 0.4rem 0.8rem;
             border-radius: 4px;
             cursor: pointer;
@@ -294,7 +294,7 @@
         }
 
         .copy-btn:hover {
-            background: #3e4451;
+            background: #444444;
             color: #ffffff;
             border-color: var(--accent-blue);
         }
@@ -312,41 +312,51 @@
             font-family: "JetBrains Mono", monospace;
             font-size: 0.9rem;
             line-height: 1.7;
-            color: var(--text-primary);
+            color: #d4d4d4;
+            background: #1e1e1e;
         }
 
         .code-content pre {
             margin: 0;
+            background: #1e1e1e;
         }
 
         .code-content .keyword {
-            color: #c678dd;
+            color: #569cd6;
             font-weight: 600;
         }
 
         .code-content .string {
-            color: #98c379;
+            color: #ce9178;
         }
 
         .code-content .comment {
-            color: #5c6370;
+            color: #6a9955;
             font-style: italic;
         }
 
         .code-content .function {
-            color: #61afef;
+            color: #dcdcaa;
         }
 
         .code-content .type {
-            color: #e5c07b;
+            color: #4ec9b0;
         }
 
         .code-content .number {
-            color: #d19a66;
+            color: #b5cea8;
         }
 
         .code-content .annotation {
-            color: #ffab40;
+            color: #d7ba7d;
+        }
+
+        .code-content .operator {
+            color: #d4d4d4;
+        }
+
+        .code-content .variable {
+            color: #9cdcfe;
         }
 
         /* Architecture Diagram */

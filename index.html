@@ -787,6 +787,8 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#overview">概述</a></li>
                 <li><a href="#architecture">架构</a></li>
+                <li><a href="#arkts">ArkTS</a></li>
+                <li><a href="#languages">语言</a></li>
                 <li><a href="#stage">Stage</a></li>
                 <li><a href="#dev">开发</a></li>
                 <li><a href="#ai">AI</a></li>
@@ -1112,9 +1114,265 @@
         </div>
     </section>
 
-    <section id="stage">
+    <section id="languages">
         <div class="section-header fade-in">
             <span class="section-number">04</span>
+            <h2>编程语言支持</h2>
+            <p>鸿蒙系统支持的主流编程语言及其开发方式</p>
+        </div>
+
+        <div class="comparison-table fade-in">
+            <table>
+                <thead>
+                    <tr>
+                        <th>语言</th>
+                        <th>开发方式</th>
+                        <th>适用场景</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>仓颉</strong></td>
+                        <td>鸿蒙原生开发，DevEco Studio/CodeArts IDE，支持语法高亮、智能联想、跨语言调试</td>
+                        <td>高性能原生应用、全场景智能应用、高安全性应用</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ArkTS</strong></td>
+                        <td>基于 TypeScript 扩展，声明式 UI 语法，@State、@Link 等响应式装饰器</td>
+                        <td>鸿蒙原生 UI 开发、多端适配界面、实时交互应用</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Java</strong></td>
+                        <td>兼容核心语法与基础类库，通过适配层迁移现有应用</td>
+                        <td>企业级应用迁移、大数据处理、Android 应用移植</td>
+                    </tr>
+                    <tr>
+                        <td><strong>JavaScript</strong></td>
+                        <td>复用前端生态资源，支持 Node.js/NestJS 框架</td>
+                        <td>轻量级应用、前端交互应用、前后端一体化开发</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python</strong></td>
+                        <td>解释型开发，支持第三方库，可通过 C 扩展弥补性能短板</td>
+                        <td>AI/机器学习、数据分析、快速原型开发、自动化脚本</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C/C++</strong></td>
+                        <td>通过 Node-API 等接口与 JS/ArkTS 跨语言调用</td>
+                        <td>底层系统开发、高性能模块（游戏引擎、图形渲染、多媒体工具）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cards-grid" style="margin-top: 2rem;">
+            <div class="card fade-in">
+                <div class="card-icon">🎯</div>
+                <h3>原生开发</h3>
+                <p>仓颉领衔，通过方舟编译器全栈优化，直接调用鸿蒙全场景 API，实现最佳性能表现。</p>
+                <div class="card-tags">
+                    <span class="tag">仓颉</span>
+                    <span class="tag">方舟编译器</span>
+                    <span class="tag">高性能</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🔄</div>
+                <h3>生态迁移</h3>
+                <p>兼容 Java、JavaScript、C/C++ 存量代码，降低跨平台开发成本，保护既有技术投资。</p>
+                <div class="card-tags">
+                    <span class="tag">Java</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">C/C++</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🔀</div>
+                <h3>混合开发</h3>
+                <p>多语言优势互补，如 C/C++ 做图形渲染 + Python 做数据分析 + 仓颉整合。</p>
+                <div class="card-tags">
+                    <span class="tag">多语言协作</span>
+                    <span class="tag">优势互补</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block fade-in" style="margin-top: 2rem;">
+            <div class="code-header">
+                <span class="code-lang">仓颉语言示例</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 仓颉语言基础语法示例</span>
+
+<span class="keyword">module</span> com.example.demo
+
+<span class="keyword">import</span> stdlib.io
+
+<span class="comment">// 主函数入口</span>
+<span class="keyword">public func</span> <span class="function">main</span>() {
+    <span class="comment">// 变量声明与类型推断</span>
+    <span class="keyword">let</span> message: String = <span class="string">"Hello, HarmonyOS!"</span>
+    <span class="keyword">let</span> count = <span class="number">42</span>  <span class="comment">// 自动推断为 Int</span>
+    
+    <span class="comment">// 函数定义</span>
+    <span class="keyword">func</span> <span class="function">greet</span>(name: String) -> String {
+        <span class="keyword">return</span> <span class="string">"你好，\(name)！"</span>
+    }
+    
+    <span class="comment">// 结构体定义</span>
+    <span class="keyword">struct</span> Person {
+        name: String
+        age: Int32
+        
+        <span class="keyword">func</span> <span class="function">introduce</span>() {
+            io.println(<span class="string">"我是 \(name)，今年 \(age) 岁"</span>)
+        }
+    }
+    
+    <span class="comment">// 使用示例</span>
+    <span class="keyword">let</span> person = Person(name: <span class="string">"张三"</span>, age: <span class="number">25</span>)
+    person.introduce()
+    
+    <span class="comment">// 并发编程 - 轻量级线程</span>
+    <span class="keyword">go</span> {
+        io.println(<span class="string">"后台任务执行中..."</span>)
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">Python 鸿蒙开发示例</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment"># 鸿蒙 Python 开发示例</span>
+
+<span class="keyword">import</span> harmony.ai <span class="keyword">as</span> ai
+<span class="keyword">import</span> harmony.ui <span class="keyword">as</span> ui
+
+<span class="comment"># AI 模型推理示例</span>
+<span class="keyword">def</span> <span class="function">run_inference</span>(image_path: str):
+    <span class="comment"># 加载盘古大模型</span>
+    model = ai.load_model(<span class="string">"pangu-vision"</span>)
+    
+    <span class="comment"># 图像识别</span>
+    result = model.predict(image_path)
+    
+    <span class="keyword">return</span> {
+        <span class="string">"label"</span>: result.label,
+        <span class="string">"confidence"</span>: result.confidence
+    }
+
+<span class="comment"># 数据分析示例</span>
+<span class="keyword">def</span> <span class="function">analyze_data</span>(data: list) -> dict:
+    <span class="keyword">import</span> numpy <span class="keyword">as</span> np
+    
+    arr = np.array(data)
+    
+    <span class="keyword">return</span> {
+        <span class="string">"mean"</span>: np.mean(arr),
+        <span class="string">"std"</span>: np.std(arr),
+        <span class="string">"median"</span>: np.median(arr)
+    }
+
+<span class="comment"># 自动化脚本示例</span>
+<span class="keyword">def</span> <span class="function">auto_task</span>():
+    <span class="keyword">from</span> harmony.automation <span class="keyword">import</span> Device
+    
+    device = Device.connect(<span class="string">"usb://192.168.1.100"</span>)
+    device.install_app(<span class="string">"com.example.app"</span>)
+    device.launch_app(<span class="string">"com.example.app"</span>)</pre>
+            </div>
+        </div>
+
+        <div class="code-block fade-in">
+            <div class="code-header">
+                <span class="code-lang">C++ 鸿蒙开发示例</span>
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            </div>
+            <div class="code-content">
+<pre><span class="comment">// 鸿蒙 C++ 原生开发示例</span>
+
+<span class="keyword">#include</span> <span class="string">&lt;harmony/native.hpp&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;harmony/graphics.hpp&gt;</span>
+
+<span class="keyword">using namespace</span> harmony;
+
+<span class="comment">// 图形渲染引擎核心模块</span>
+<span class="keyword">class</span> <span class="function">RenderEngine</span> {
+<span class="keyword">public:</span>
+    <span class="function">RenderEngine</span>() {
+        initGraphicsContext();
+    }
+    
+    <span class="keyword">void</span> <span class="function">render</span>(Scene* scene) {
+        <span class="comment">// 渲染管线</span>
+        beginFrame();
+        
+        <span class="keyword">for</span> (auto&amp; obj : scene-&gt;objects) {
+            drawObject(obj);
+        }
+        
+        endFrame();
+    }
+    
+    <span class="keyword">void</span> <span class="function">drawObject</span>(GameObject* obj) {
+        <span class="comment">// GPU 加速渲染</span>
+        m_graphics.drawMesh(obj-&gt;mesh);
+        m_graphics.applyShader(obj-&gt;material);
+    }
+    
+<span class="keyword">private:</span>
+    GraphicsContext m_graphics;
+};
+
+<span class="comment">// 与 ArkTS 交互</span>
+<span class="keyword">extern</span> <span class="string">"C"</span> {
+    <span class="keyword">void</span> <span class="function">nativeInit</span>() {
+        <span class="comment">// 初始化原生模块</span>
+    }
+    
+    <span class="keyword">int</span> <span class="function">nativeProcess</span>(<span class="keyword">const char</span>* data) {
+        <span class="comment">// 处理来自 ArkTS 的数据</span>
+        <span class="keyword">return</span> <span class="number">0</span>;
+    }
+}</pre>
+            </div>
+        </div>
+
+        <ul class="feature-list fade-in" style="margin-top: 2rem;">
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>开发工具链</strong>
+                    <span>DevEco Studio（基于 IntelliJ IDEA 定制）、CodeArts，支持跨平台项目管理、编译打包、模拟器调试、真机调试、性能分析。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>仓颉语言特性</strong>
+                    <span>华为自主研发的编程语言，2025 年 7 月 30 日正式开源。支持运行时、编译器、命令行工具、标准库等完整工具链。</span>
+                </div>
+            </li>
+            <li>
+                <span class="feature-icon">▸</span>
+                <div class="feature-text">
+                    <strong>ArkTS 主力地位</strong>
+                    <span>基于 TypeScript 优化，提供强类型检查、声明式 UI 和响应式编程能力，是鸿蒙应用开发的首选语言。</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <section id="stage">
+        <div class="section-header fade-in">
+            <span class="section-number">05</span>
             <h2>Stage 模型</h2>
             <p>鸿蒙应用的核心开发模型与四大组件</p>
         </div>
@@ -1241,7 +1499,7 @@
 
     <section id="dev">
         <div class="section-header fade-in">
-            <span class="section-number">05</span>
+            <span class="section-number">06</span>
             <h2>应用开发指南</h2>
             <p>从开发工具到构建发布，鸿蒙原生应用开发全流程</p>
         </div>
@@ -1405,7 +1663,7 @@
 
     <section id="ai">
         <div class="section-header fade-in">
-            <span class="section-number">06</span>
+            <span class="section-number">07</span>
             <h2>AI 能力与智能体</h2>
             <p>盘古大模型赋能的智慧操作系统，AI 与 OS 深度融合</p>
         </div>
@@ -1508,7 +1766,7 @@
 
     <section id="compiler">
         <div class="section-header fade-in">
-            <span class="section-number">07</span>
+            <span class="section-number">08</span>
             <h2>方舟编译器 & HarmonyOS 6</h2>
             <p>从源码到机器码的完整编译链路，以及 2025 年发布的 HarmonyOS 6 核心技术</p>
         </div>
@@ -1581,7 +1839,7 @@
 
     <section id="timeline">
         <div class="section-header fade-in">
-            <span class="section-number">08</span>
+            <span class="section-number">09</span>
             <h2>发展历程</h2>
             <p>从鸿蒙初起到全面进化的技术演进之路</p>
         </div>
@@ -1627,7 +1885,7 @@
 
     <section id="conclusion">
         <div class="section-header fade-in">
-            <span class="section-number">09</span>
+            <span class="section-number">10</span>
             <h2>总结与展望</h2>
             <p>鸿蒙技术体系的核心价值与未来发展方向</p>
         </div>
